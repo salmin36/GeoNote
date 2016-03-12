@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">GeoNote</string>
+    <string name="list_name">List Fragment</string>
+    <string name="hello_blank_fragment">Single Page fragment</string>
+    <string name="map_fragment">Map Fragment</string>
+    <string name="add_item_button_text">New Item</string>
+    <!-- This is an ad unit ID for a test ad. Replace with your own banner ad unit id. -->
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+    <string name="cache_name_placeholder">Enter name of cache</string>
+    <string name="cache_gc_placeholder">Enter GC code</string>
+    <string name="cache_difficulty_spinner_name">Difficulty</string>
+    <string name="cache_size_spinner_name">Size</string>
+    <string name="cache_terrain_spinner_name">Terrain</string>
+    <string name="cache_winter_spinner_name">Available in winter</string>
+    <string name="cache_add_note_placeholder">Write some additional information here</string>
+    <string name="single_cache_remove_button_text">Delete</string>
+    <string name="single_cache_modify_button_text">Modify</string>
+    <string name="single_cache_difficulty_name">Difficulty</string>
+    <string name="single_cache_terrain_name">Terrain</string>
+    <string name="error_cache_exists">Cache with same name already exists. Please choose a different name.</string>
+    <string name="error_cache_name_empty">Cache name cannot be empty. Please choose a unique name for cache.</string>
+    <string-array name="cache_type_array">
+        <item>Mystery</item>
+        <item>Multi</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="cache_size_array">
+        <item>XS</item>
+        <item>S</item>
+        <item>M</item>
+        <item>L</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="cache_difficulty_array">
+        <item>1</item>
+        <item>1.5</item>
+        <item>2</item>
+        <item>2.5</item>
+        <item>3</item>
+        <item>3.5</item>
+        <item>4</item>
+        <item>4.5</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="cache_terrain_array">
+        <item>1</item>
+        <item>1.5</item>
+        <item>2</item>
+        <item>2.5</item>
+        <item>3</item>
+        <item>3.5</item>
+        <item>4</item>
+        <item>4.5</item>
+        <item>5</item>
+    </string-array>
+
+
+    <string-array name="cache_winter_array">
+        <item>Yes</item>
+        <item>No</item>
+        <item>Don´t know</item>
+    </string-array>
+
+</resources>
