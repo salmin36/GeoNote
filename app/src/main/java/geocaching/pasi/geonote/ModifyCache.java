@@ -2,13 +2,18 @@ package geocaching.pasi.geonote;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,8 +54,8 @@ public class ModifyCache extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setPositiveButton("Update",null);
-        builder.setNegativeButton("Cancel",null);
+        builder.setPositiveButton("Update", null);
+        builder.setNegativeButton("Cancel", null);
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -68,7 +73,7 @@ public class ModifyCache extends DialogFragment {
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(((EditText) getDialog().findViewById(R.id.cacheName)).getText().length() == 0){
+                        if (((EditText) getDialog().findViewById(R.id.cacheName)).getText().length() == 0) {
                             //Set alert dialog that informs cache name being empty
                             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getContext());
                             TextView textView = new TextView(getContext());
@@ -78,7 +83,9 @@ public class ModifyCache extends DialogFragment {
                             alertDialogBuilder.setCustomTitle(textView);
                             alertDialogBuilder.show();
                         }
-                        else if(m_listener.isThereSameNameCache((((EditText) getDialog().findViewById(R.id.cacheName)).getText().toString()))){
+                        //If there is same name already in listview and if the name is not for this particular cache
+                        else if (m_listener.isThereSameNameCache((((EditText) getDialog().findViewById(R.id.cacheName)).getText().toString())) &&
+                                !m_cache.getName().equalsIgnoreCase(m_oldName)) {
                             //Set alert dialog that informs about existing cache with similar name
                             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getContext());
                             TextView textView = new TextView(getContext());
@@ -87,8 +94,7 @@ public class ModifyCache extends DialogFragment {
                             textView.setTextColor(Color.BLACK);
                             alertDialogBuilder.setCustomTitle(textView);
                             alertDialogBuilder.show();
-                        }
-                        else{
+                        } else {
                             updateCache();
                             m_listener.onCacheModified(m_cache, m_oldName);
                             dismiss();
@@ -113,25 +119,47 @@ public class ModifyCache extends DialogFragment {
         m_cache.setTerrain(Double.valueOf(((Spinner) getDialog().findViewById(R.id.cache_terrain_spinner)).getSelectedItem().toString()));
         //Set name
         m_cache.setName(((EditText) getDialog().findViewById(R.id.cacheName)).getText().toString());
+
         //Setup latitude and longitude
         String lat = ((EditText) getDialog().findViewById(R.id.cache_latitude_degree)).getText().toString();
+
         if(lat.length() != 0){
             //Add : to conform the notations DD:MM.MMMMM
             lat += ":";
             String minutes = ((EditText) getDialog().findViewById(R.id.cache_latitude_minutes)).getText().toString();
-            if(minutes.length() != 0){
+            if(minutes.length() != 0 && minutes.contains(".") && minutes.length() >= 4){
                 lat += minutes;
             }
+            else{lat += "00.000";}
+        }
+        else{
+            lat = "00:";
+            String minutes = ((EditText) getDialog().findViewById(R.id.cache_latitude_minutes)).getText().toString();
+            if(minutes.length() != 0 && minutes.contains(".")&& minutes.length() >= 4){
+                lat += minutes;
+            }
+            else{lat += "00.000";}
         }
         String longi = ((EditText) getDialog().findViewById(R.id.cache_longitude_degree)).getText().toString();
         if(longi.length() != 0){
             //Add : to conform the notations DD:MM.MMMMM
             longi += ":";
             String minutes = ((EditText) getDialog().findViewById(R.id.cache_longitude_minutes)).getText().toString();
-            if(minutes.length() != 0){
+            if(minutes.length() != 0 && minutes.contains(".")&& minutes.length() >= 4){
                 longi += minutes;
             }
+            else {longi += "00.000";}
         }
+        else{
+            longi = "00:";
+            String minutes = ((EditText) getDialog().findViewById(R.id.cache_longitude_minutes)).getText().toString();
+            if(minutes.length() != 0 && minutes.contains(".")&& minutes.length() >= 4){
+                longi += minutes;
+            }
+            else{longi += "00.000";}
+        }
+
+        Log.v("GeoNote", "Before setting coordinates are: " + lat + ", " + longi);
         m_cache.setLatLong(lat, longi);
         //Set note
         String note = ((EditText)getDialog().findViewById(R.id.cache_add_note)).getText().toString();
@@ -228,6 +256,123 @@ public class ModifyCache extends DialogFragment {
         ((EditText)getDialog().findViewById(R.id.cache_longitude_minutes)).setText(m_cache.getLongMinutes());
         //Set Note
         ((EditText)getDialog().findViewById(R.id.cache_add_note)).setText(m_cache.getNote());
+
+
+        ((EditText)getDialog().findViewById(R.id.cache_latitude_degree)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 2) {
+                    Log.v("GeoNote", "Two chars in box");
+                    ((EditText) getDialog().findViewById(R.id.cache_latitude_minutes)).requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        ((EditText) getDialog().findViewById(R.id.cache_latitude_minutes)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Add . affter two numbers
+                if (s.length() == 2 && count > before) {
+                    EditText text = ((EditText) getDialog().findViewById(R.id.cache_latitude_minutes));
+                    text.append(".");
+                } else if (s.length() == 6) {
+                    ((EditText) getDialog().findViewById(R.id.cache_longitude_degree)).requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        ((EditText)getDialog().findViewById(R.id.cache_longitude_degree)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 2) {
+                    ((EditText) getDialog().findViewById(R.id.cache_longitude_minutes)).requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        ((EditText) getDialog().findViewById(R.id.cache_longitude_minutes)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 2 && count > before) {
+                    EditText text = ((EditText) getDialog().findViewById(R.id.cache_longitude_minutes));
+                    //text.setText(text.getText() + ".");
+                    text.append(".");
+                } else if (s.length() == 6) {
+                    ((EditText) getDialog().findViewById(R.id.cache_longitude_minutes)).clearFocus();
+                    InputMethodManager imm = ((InputMethodManager) getContext().getSystemService(Service.INPUT_METHOD_SERVICE));
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(((EditText) getDialog().findViewById(R.id.cache_longitude_minutes)).getWindowToken(), 0);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+
+        //If coordinates are 0 then make the corresponding minutes and degree fields empty
+        EditText textEdit = ((EditText) getDialog().findViewById(R.id.cache_latitude_degree));
+        if(textEdit.getText().toString().contentEquals("0")){
+            Log.v("GeoNote", "Got here 1: " + textEdit.getText().toString());
+            textEdit.setText("");
+        }
+        textEdit = ((EditText) getDialog().findViewById(R.id.cache_latitude_minutes));
+        if(textEdit.getText().toString().contentEquals("0")){
+            Log.v("GeoNote", "Got here 2: " + textEdit.getText().toString());
+            textEdit.setText("");
+        }
+        textEdit = ((EditText) getDialog().findViewById(R.id.cache_longitude_degree));
+        if(textEdit.getText().toString().contentEquals("0")){
+            Log.v("GeoNote", "Got here 3: " + textEdit.getText().toString());
+            textEdit.setText("");
+        }
+        textEdit = ((EditText) getDialog().findViewById(R.id.cache_longitude_minutes));
+        if(textEdit.getText().toString().contentEquals("0")){
+            Log.v("GeoNote", "Got here 4 "  + textEdit.getText().toString());
+            textEdit.setText("");
+        }
+
+
+        Log.v("GeoNote", "now Coordinates:" + m_cache.getCoordinates());
+
     }
 
     private void createCache() {
@@ -242,6 +387,7 @@ public class ModifyCache extends DialogFragment {
         m_cache.setType(getArguments().getString("type"));
         m_cache.setWinter(getArguments().getString("winter"));
         m_oldName = getArguments().getString("name");
+        Log.v("GeoNote", "2now Coordinates:" + m_cache.getLat() + "," + m_cache.getLong());
     }
 
     public void onAttach(Activity activity) {
