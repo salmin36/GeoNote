@@ -402,7 +402,6 @@ public class ModifyCache extends DialogFragment {
                     + " must implement CacheListener");
         }
     }
-
     @Override
     public void onDetach() {
        m_listener = null; // => avoid leaking
