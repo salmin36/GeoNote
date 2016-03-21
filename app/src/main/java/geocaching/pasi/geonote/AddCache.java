@@ -110,7 +110,7 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
                     public void onClick(View v) {
                         Log.v("GeoNote", "Positive button clicked");
                         //Figure out if there is already similar name of existing cache
-                        if(((EditText) getDialog().findViewById(R.id.cacheName)).getText().length() == 0){
+                        if (((EditText) getDialog().findViewById(R.id.cacheName)).getText().length() == 0) {
                             //Set alert dialog that informs cache name being empty
                             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getContext());
                             TextView textView = new TextView(getContext());
@@ -119,8 +119,7 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
                             textView.setTextColor(Color.BLACK);
                             alertDialogBuilder.setCustomTitle(textView);
                             alertDialogBuilder.show();
-                        }
-                        else if (m_listener.isThereSameNameCache((((EditText) getDialog().findViewById(R.id.cacheName)).getText().toString()))) {
+                        } else if (m_listener.isThereSameNameCache((((EditText) getDialog().findViewById(R.id.cacheName)).getText().toString()))) {
                             //Set alert dialog that informs about existing cache with similar name
                             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getContext());
                             TextView textView = new TextView(getContext());
@@ -383,9 +382,17 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
 
 
     private void parseCacheInformationFromString(String result){
+        //Find type
+        int ind1 = result.indexOf("cacheImage");
+        if(ind1 == -1){return;}
+        ind1 = result.indexOf("WptTypes/");
+        if(ind1 == -1){return;}
+        String str = result.substring(ind1 + 9,ind1 + 10);
+        Log.v("GeoNote", "Cache type number is: " + str);
+        changeCacheType(Integer.parseInt(str));
 
         //First find cache name
-        int ind1 = result.indexOf("CacheName");
+        ind1 = result.indexOf("CacheName");
         if(ind1 == -1){return;}
         int ind2 = result.indexOf("<",ind1 + 11);
         if(ind2 == -1){return;}
@@ -450,7 +457,7 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
         if(size.contains("micro")){spinner.setSelection(0);}
         else if(size.contains("small")){spinner.setSelection(1);}
         else if(size.contains("regular")){spinner.setSelection(2);}
-            else if(size.contains("large")){spinner.setSelection(3);}
+        else if(size.contains("large")){spinner.setSelection(3);}
         else{spinner.setSelection(4);}
 
         //Find if available in winter
@@ -529,4 +536,37 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
 
         return hint;
     }
+
+
+    /* This function changes ui type spinner so that the given type number corresponds to right type
+    *
+    *
+    *   2 == regular
+    *   3 == multi
+    *   6 == happening
+    *   8 == mystery
+    */
+    void changeCacheType(int type){
+        Log.v("GeoNote","changeCacheType == " + type);
+        switch (type){
+                //Regular cache
+            case 2:
+                ((Spinner)getDialog().findViewById(R.id.cache_type_spinner)).setSelection(2);
+                break;
+                //Multi cache
+            case 3:
+                ((Spinner)getDialog().findViewById(R.id.cache_type_spinner)).setSelection(1);
+                break;
+                //Happening cache
+            case 6:
+                ((Spinner)getDialog().findViewById(R.id.cache_type_spinner)).setSelection(3);
+                break;
+                //Mystery cache
+            case 8:
+                ((Spinner)getDialog().findViewById(R.id.cache_type_spinner)).setSelection(0);
+                break;
+        }
+    }
 }
+
+

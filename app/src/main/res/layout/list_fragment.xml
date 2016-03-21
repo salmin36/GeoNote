@@ -7,9 +7,9 @@
         android:id="@+id/horizontal_divider_list"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="#000000"
         android:layout_marginTop="20px"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        style="@style/buttonColor"/>
 
     <ListView
         android:layout_width="match_parent"
@@ -23,6 +23,7 @@
         android:text="@string/add_item_button_text"
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        style="@style/buttonColor"/>
 
 </RelativeLayout>

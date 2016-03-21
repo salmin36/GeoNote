@@ -92,12 +92,20 @@ public class SingleCacheFragment extends Fragment {
         //Update gc code
         ((TextView)m_fragmentsView.findViewById(R.id.single_cacheGc)).setText(cache.getGc());
 
+        //Update type
         if(cache.getTypeString().contains("multi")){
             ((View)m_fragmentsView.findViewById(R.id.single_cache_circle)).setBackground(getContext().getResources().getDrawable(R.drawable.yellow_circle));
         }
         else if(cache.getTypeString().contains("mystery")){
             ((View)m_fragmentsView.findViewById(R.id.single_cache_circle)).setBackground(getContext().getResources().getDrawable(R.drawable.blue_circle));
         }
+        else if(cache.getTypeString().contains("regular")){
+            ((View)m_fragmentsView.findViewById(R.id.single_cache_circle)).setBackground(getContext().getResources().getDrawable(R.drawable.green_circle));
+        }
+        else if(cache.getTypeString().contains("happening")){
+            ((View)m_fragmentsView.findViewById(R.id.single_cache_circle)).setBackground(getContext().getResources().getDrawable(R.drawable.red_circle));
+        }
+
         //Update Latitude and Longitude
         ((TextView)m_fragmentsView.findViewById(R.id.single_cache_latitude)).setText(cache.getLat());
         ((TextView)m_fragmentsView.findViewById(R.id.single_cache_longitude)).setText(cache.getLong());

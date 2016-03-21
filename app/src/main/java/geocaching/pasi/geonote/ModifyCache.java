@@ -196,8 +196,15 @@ public class ModifyCache extends DialogFragment {
         else if(type.contains("multi")){
             spinner.setSelection(1);
         }
-        else{
+        else if(type.contains("regular")){
             spinner.setSelection(2);
+        }
+        else if(type.contains("happening")){
+            spinner.setSelection(3);
+        }
+        //Set other
+        else{
+            spinner.setSelection(4);
         }
 
         //Populate size spinner

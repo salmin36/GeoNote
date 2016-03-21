@@ -67,7 +67,7 @@ public class Cache {
     public String getLatDegrees(){
         String latDeg = Location.convert(m_coordinates.latitude, Location.FORMAT_MINUTES);
         Log.v("GeoNote", "getLatDegrees: " + latDeg);
-        latDeg = latDeg.substring(0,latDeg.indexOf(':'));
+        latDeg = latDeg.substring(0, latDeg.indexOf(':'));
         Log.v("GeoNote", "getLatDegrees: " + latDeg);
         return latDeg;
     }
@@ -189,6 +189,8 @@ public class Cache {
             case MULTI: return "multi";
             case MYSTERY: return "mystery";
             case OTHER: return "other";
+            case REGULAR: return "regular";
+            case HAPPENING: return "happening";
         }
         return "";
     }
@@ -199,6 +201,12 @@ public class Cache {
         }
         else if(type.toLowerCase().contains("mystery")){
             m_type = Common.Type.MYSTERY;
+        }
+        else if(type.toLowerCase().contains("regular")){
+            m_type = Common.Type.REGULAR;
+        }
+        else if(type.toLowerCase().contains("happening")){
+            m_type = Common.Type.HAPPENING;
         }
         else{
             m_type = Common.Type.OTHER;

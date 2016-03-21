@@ -3,7 +3,12 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:textColorPrimary">#FFFFFF</item>
     </style>
 
+    <style name="buttonColor">
+        <item name="android:background">#00bfff</item>
+    </style>
+    <color name="DefaultTextColor">#ffffff</color>
 
 </resources>

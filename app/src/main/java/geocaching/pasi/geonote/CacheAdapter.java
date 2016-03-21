@@ -43,6 +43,12 @@ public class CacheAdapter extends ArrayAdapter<Cache> {
         else if(m_objects.get(position).getTypeString().indexOf("multi") != -1){
             ((View)holder.value).findViewById(R.id.circle).setBackground(getContext().getResources().getDrawable(R.drawable.yellow_circle));
         }
+        else if(m_objects.get(position).getTypeString().indexOf("regular") != -1){
+            ((View)holder.value).findViewById(R.id.circle).setBackground(getContext().getResources().getDrawable(R.drawable.green_circle));
+        }
+        else if(m_objects.get(position).getTypeString().indexOf("happening") != -1){
+            ((View)holder.value).findViewById(R.id.circle).setBackground(getContext().getResources().getDrawable(R.drawable.red_circle));
+        }
         return view;
     }
 

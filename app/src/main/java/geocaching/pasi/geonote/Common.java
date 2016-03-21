@@ -15,6 +15,8 @@ public class Common{
     public enum Type{
         MULTI,
         MYSTERY,
+        REGULAR,
+        HAPPENING,
         OTHER
     }
 
