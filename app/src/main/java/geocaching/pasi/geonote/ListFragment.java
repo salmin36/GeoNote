@@ -3,12 +3,14 @@ package geocaching.pasi.geonote;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -17,11 +19,18 @@ public class ListFragment extends Fragment {
     private View m_fragmentsView;
     private CacheAdapter m_cacheAdapter;
     private Cache m_currentlyShowing;
+    private RelativeLayout m_previous;
+    private int m_previous_position;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        Log.v("GeoNote", "ListFragment.onCreate");
 
+        //Test if we can login to website with post
+        /*AsyncTryLogin async = new AsyncTryLogin();
+        Log.v("GeoNote", "Try login with username and passwoerd");
+        async.execute();*/
     }
     
     @Override
@@ -44,9 +53,11 @@ public class ListFragment extends Fragment {
         m_cacheAdapter = new CacheAdapter(getContext(), R.layout.listview_item_row, ((MainActivity)getActivity()).getCacheList());
         list.setAdapter(m_cacheAdapter);
         list.setClickable(true);
-
-
         setHandlers();
+        Log.v("GeoNote", "ListFragment.onCreateView");
+        if(m_previous != null){
+            m_previous.setBackgroundColor(getResources().getColor(R.color.highlight_color));
+        }
 
 
 
@@ -65,6 +76,15 @@ public class ListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 m_currentlyShowing = (Cache) parent.getItemAtPosition(position);
+                //Highlight selected item in listview
+                if(m_previous != null){
+                    m_previous.setBackgroundColor(getResources().getColor(R.color.background_color));
+                }
+                RelativeLayout lay = (RelativeLayout) view.findViewById(R.id.list_item_layout);
+                lay.setBackgroundColor(getResources().getColor(R.color.highlight_color));
+                m_previous = lay;
+                m_previous_position = position;
+
                 ((MainActivity) getActivity()).routeUpdateCallFromListToSingle(m_currentlyShowing);
                 ((MainActivity) getActivity()).routeUpdateCallFromListToMap(m_currentlyShowing);
                 ((MainActivity) getActivity()).changePageToSingleFragment();
@@ -92,6 +112,14 @@ public class ListFragment extends Fragment {
         ((MainActivity)getActivity()).routeUpdateCallFromListToSingle(m_currentlyShowing);
         ((MainActivity)getActivity()).routeUpdateCallFromListToMap(m_currentlyShowing);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v("GeoNote", "ListFragment onResume");
+        if(m_previous != null){
+            Log.v("GeoNote", "ListFragment onResume, m_previous != null");
+            m_previous.setBackgroundColor(getResources().getColor(R.color.highlight_color));
+        }
+    }
 }
-
-

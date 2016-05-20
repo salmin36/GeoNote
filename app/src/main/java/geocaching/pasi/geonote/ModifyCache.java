@@ -23,10 +23,203 @@ import android.widget.TextView;
 /**
  * Created by Pasi on 10/03/2016.
  */
-public class ModifyCache extends DialogFragment {
+public class ModifyCache extends DialogFragment implements AsyncCacheGet.HttpCacheListener {
     private Cache m_cache;
     private CacheListener m_listener;
     private String m_oldName;
+    private boolean m_downloadStarted;
+
+    @Override
+    public void gotCache(String result) {
+        Log.v("GeoNote", "gotCache started");
+        parseCacheInformationFromString(result);
+        m_downloadStarted = false;
+    }
+
+    private void parseCacheInformationFromString(String result) {
+        //Find type
+        int ind1 = result.indexOf("cacheImage");
+        if(ind1 == -1){return;}
+        ind1 = result.indexOf("WptTypes/");
+        if(ind1 == -1){return;}
+        String str = result.substring(ind1 + 9,ind1 + 10);
+        Log.v("GeoNote", "Cache type number is: " + str);
+        changeCacheType(Integer.parseInt(str));
+
+        //First find cache name
+        ind1 = result.indexOf("CacheName");
+        if(ind1 == -1){return;}
+        int ind2 = result.indexOf("<",ind1 + 11);
+        if(ind2 == -1){return;}
+        ind1 += 11;
+        Log.v("GeoNote", "CacheName == " + result.substring(ind1,ind2));
+        //Set name
+        ((EditText)getDialog().findViewById(R.id.cacheName)).setText(result.substring(ind1,ind2));
+
+        //Then find difficulty
+        ind1 = result.indexOf("ContentBody_diffTerr",ind2);
+        if(ind1 == -1){return;}
+        ind1 = result.indexOf("alt=", ind1);
+        if(ind1 == -1){return;}
+        ind1 += 5;
+        ind2 = result.indexOf("out", ind1);
+        ind2 -= 1;
+        if(ind2 == -1 || ind2 <= ind1){return;}
+        Log.v("GeoNote", "Difficulty == " + result.substring(ind1, ind2));
+        Double difficulty = Double.valueOf(result.substring(ind1, ind2));
+        Spinner spinner = ((Spinner)getDialog().findViewById(R.id.cache_difficulty_spinner));
+        if(difficulty == 1){spinner.setSelection(0);}
+        else if(difficulty ==  1.5){spinner.setSelection(1);}
+        else if(difficulty == 2){spinner.setSelection(2);}
+        else if(difficulty ==  2.5){spinner.setSelection(3);}
+        else if(difficulty == 3){spinner.setSelection(4);}
+        else if(difficulty ==  3.5){spinner.setSelection(5);}
+        else if(difficulty == 4){spinner.setSelection(6);}
+        else if(difficulty == 4.5){spinner.setSelection(7);}
+        else if(difficulty == 5){spinner.setSelection(8);}
+
+
+        //Then find Terrain
+        ind1 = result.indexOf("alt=",ind2);
+        ind1 += 5;
+        ind2 = result.indexOf("out", ind1);
+        ind2 -= 1;
+        if(ind2 == -1 || ind2 <= ind1){return;}
+        Log.v("GeoNote", "Terrain == " + result.substring(ind1, ind2));
+
+        Double terrain = Double.valueOf(result.substring(ind1,ind2));
+        Log.v("GeoNote", "Terrain == " + terrain);
+        if(terrain == 1){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(0);}
+        else if(terrain ==  1.5){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(1);}
+        else if(terrain == 2){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(2);}
+        else if(terrain ==  2.5){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(3);}
+        else if(terrain == 3){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(4);}
+        else if(terrain ==  3.5){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(5);}
+        else if(terrain == 4){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(6);}
+        else if(terrain == 4.5){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(7);}
+        else if(terrain == 5){((Spinner)getDialog().findViewById(R.id.cache_terrain_spinner)).setSelection(8);}
+
+
+        //Then find size
+        ind1 = result.indexOf("alt=",ind2);
+        ind1 += 11;
+        ind2 = result.indexOf("\"", ind1);
+        if(ind2 == -1 || ind2 <= ind1){return;}
+        Log.v("GeoNote", "Size == " + result.substring(ind1,ind2));
+
+        spinner =((Spinner)getDialog().findViewById(R.id.cache_size_spinner));
+        String size = result.substring(ind1,ind2);
+        if(size.contains("micro")){spinner.setSelection(0);}
+        else if(size.contains("small")){spinner.setSelection(1);}
+        else if(size.contains("regular")){spinner.setSelection(2);}
+        else if(size.contains("large")){spinner.setSelection(3);}
+        else{spinner.setSelection(4);}
+
+        //Find if available in winter
+        ind1 = result.indexOf("available in winter");
+        ind2 = result.indexOf("not available for winter");
+        if(ind1 != -1 ){
+            Log.v("GeoNote", "Available in winter");
+        }
+        else if(ind2 !=  -1 ){
+            Log.v("GeoNote", "Not available in winter");
+        }
+        else{
+            Log.v("GeoNote", "Information not available");
+        }
+
+        //Find hint if available
+        String hint = getHintFromString(result);
+        ((EditText)getDialog().findViewById(R.id.cache_add_note)).setText(hint);
+
+    }
+
+    private String getHintFromString(String str) {
+        if(str == null || str.length() == 0){return "";}
+        int ind1 = str.indexOf("ctl00_ContentBody_hints");
+        if(ind1 == -1){return "";}
+        ind1 = str.indexOf("div_hint",ind1);
+        if(ind1 == -1){return "";}
+        ind1 = str.indexOf(">",ind1);
+        if(ind1 == -1){return "";}
+        ind1 +=1;
+        int ind2 = str.indexOf("</div>", ind1);
+        if(ind2 == -1){return "";}
+        //Now we have the tip between ind1 and ind2 indexes from string str
+
+        String hint = str.substring(ind1,ind2);
+        hint = hint.replaceAll("<br>","\n");
+        char[] chars = hint.toCharArray();
+        char c;
+        int ascii;
+        //Go throught all the components in string and add 13 to all the capital letters
+        for(int i = 0; i < chars.length; i++){
+            if(chars[i] == '['){
+                //Find corresponding closing ]
+                ind1 = hint.indexOf("]",i);
+                //No closing ] something went wrong
+                if(ind1 == -1){return "";}
+                i = ind1 + 1;
+            }
+            c = chars[i];
+            ascii = (int)c;
+            //So if we have lowercase letter
+            if(ascii >= 97 && ascii <= 109){
+                c = (char)( c + 13);
+                chars[i] = c;
+            }
+            else if(ascii >= 110 && ascii <= 122){
+                c = (char)( c - 13);
+                chars[i] = c;
+            }
+            //If we have uppercase letters
+            else if(ascii >= 65 && ascii <= 77){
+                c = (char)( c + 13);
+                chars[i] = c;
+            }
+            else if(ascii >= 78 && ascii <= 90){
+                c = (char)( c - 13);
+                chars[i] = c;
+            }
+        }
+
+        hint = String.copyValueOf(chars);
+        hint = hint.trim();
+        Log.v("GeoNote","result: " + hint);
+
+        return hint;
+    }
+
+
+    /* This function changes ui type spinner so that the given type number corresponds to right type
+    *
+    *
+    *   2 == regular
+    *   3 == multi
+    *   6 == happening
+    *   8 == mystery
+    */
+    private void changeCacheType(int type){
+        Log.v("GeoNote","changeCacheType == " + type);
+        switch (type){
+            //Regular cache
+            case 2:
+                ((Spinner)getDialog().findViewById(R.id.cache_type_spinner)).setSelection(2);
+                break;
+            //Multi cache
+            case 3:
+                ((Spinner)getDialog().findViewById(R.id.cache_type_spinner)).setSelection(1);
+                break;
+            //Happening cache
+            case 6:
+                ((Spinner)getDialog().findViewById(R.id.cache_type_spinner)).setSelection(3);
+                break;
+            //Mystery cache
+            case 8:
+                ((Spinner)getDialog().findViewById(R.id.cache_type_spinner)).setSelection(0);
+                break;
+        }
+    }
 
     public interface CacheListener {
         public void onCacheModified(Cache cache, String oldName);
@@ -58,6 +251,8 @@ public class ModifyCache extends DialogFragment {
         builder.setNegativeButton("Cancel", null);
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        m_downloadStarted = false;
 
         //Create cache with given arguments
         createCache();
@@ -264,6 +459,18 @@ public class ModifyCache extends DialogFragment {
         //Set Note
         ((EditText)getDialog().findViewById(R.id.cache_add_note)).setText(m_cache.getNote());
 
+        //Set listener for gc editText
+        ((EditText)getDialog().findViewById(R.id.cacheGc)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.v("GeoNote", "focus changed to: " + hasFocus);
+
+                if (!hasFocus && !m_downloadStarted) {
+                    getGcAttributes(((EditText) v).getText().toString());
+                }
+            }
+        });
+
 
         ((EditText)getDialog().findViewById(R.id.cache_latitude_degree)).addTextChangedListener(new TextWatcher() {
             @Override
@@ -380,6 +587,20 @@ public class ModifyCache extends DialogFragment {
 
         Log.v("GeoNote", "now Coordinates:" + m_cache.getCoordinates());
 
+    }
+
+
+    public void getGcAttributes(String gc){
+        Log.v("GeoNote","gc code is " + gc);
+        if(gc.length() != 0){
+            Log.v("GeoNote", "Starting download");
+            m_downloadStarted = true;
+            AsyncCacheGet async = new AsyncCacheGet();
+            //Setting url that is used to connect to server
+            async.setGc(gc.toUpperCase());
+            async.addListener(this);
+            async.execute();
+        }
     }
 
     private void createCache() {

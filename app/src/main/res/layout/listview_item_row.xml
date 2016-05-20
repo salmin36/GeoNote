@@ -2,6 +2,7 @@
 <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/list_item_layout"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <TextView
         android:layout_height="wrap_content"
@@ -22,9 +23,14 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="40px"
         />
+
     <View
-        android:layout_below="@+id/key"
+        android:id="@+id/horizontal_divider_list"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="4dp"
         style="@style/buttonColor"/>
+
+
 </RelativeLayout>

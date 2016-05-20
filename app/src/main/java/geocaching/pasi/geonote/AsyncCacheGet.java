@@ -38,6 +38,7 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... params) {
+        int responseCode = 0;
         //If for some reason url is empty then just return empty string without trying to download anything
         if(m_url.length() == 0){
             return "";
@@ -47,8 +48,10 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
 
         try {
             URL url = new URL(m_url);
+            Log.v("GeoNote", "URL " + url);
 
             m_urlConnection = (HttpURLConnection) url.openConnection();
+            m_urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0");
             InputStream in = new BufferedInputStream(m_urlConnection.getInputStream());
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -56,7 +59,11 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
             String line;
             while ((line = reader.readLine()) != null) {
                 result.append(line);
+//                Log.v("GeoNote",line);
             }
+
+            responseCode = m_urlConnection.getResponseCode();
+  //          Log.v("GeoNote", "HTTP response code is " + responseCode);
 
         }catch( Exception e) {
             e.printStackTrace();
@@ -65,7 +72,7 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
             m_urlConnection.disconnect();
         }
 
-        return result.toString();
+        return String.valueOf(responseCode) + ":" + result.toString();
     }
 
     @Override
@@ -77,7 +84,7 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
         //result = result.replaceAll(",", "\n");
         Log.v("GeoNote", "onPostExcute");
         //Do something with the JSON string
-        Log.v("GeoNote", result);
+        //Log.v("GeoNote", result);
         // Notify everybody that may be interested.
         for (HttpCacheListener hl : listeners)
             hl.gotCache(result);

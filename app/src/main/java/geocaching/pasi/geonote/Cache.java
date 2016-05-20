@@ -156,32 +156,52 @@ public class Cache {
     }
 
 
-    //Give String ins format DD:MM.MMMM
+    //Give String in format DD:MM.MMMM
     public void setLat(String latitude){
-        //m_coordinates =  new LatLng(Location.convert(latitude), m_coordinates.longitude);
-        m_coordinates =  new LatLng(0,0);
+        try {
+            m_coordinates = new LatLng(Common.CoordinateConverter.convert(latitude), m_coordinates.longitude);
+        }
+        catch (IllegalArgumentException ex) {
+            Log.v("GeoNote","IllegalArgument in setLan: " + latitude);
+            m_coordinates = new LatLng(0, 0);
+        }
     }
 
     public void setLong(String longitude){
-        m_coordinates =  new LatLng(m_coordinates.latitude, Location.convert(longitude));
+        try{
+            m_coordinates =  new LatLng(m_coordinates.latitude, Common.CoordinateConverter.convert(longitude));
+        }
+        catch (IllegalArgumentException ex)
+        {
+            Log.v("GeoNote","IllegalArgument in setLan: " + longitude);
+            m_coordinates = new LatLng(0,0);
+        }
+
     }
 
     public void setLatLong(String latitude, String longitude){
+        Log.v("GeoNote","setLatLong: " + latitude + ", " + longitude);
         try{
+            Log.v("GeoNote","setLatLong 1");
             if( latitude.length() != 0 && latitude.contains(":") && latitude.contains(".") &&
                 longitude.length() != 0 && longitude.contains(":") && longitude.contains(".")){
-                m_coordinates =  new LatLng(Location.convert(latitude), Location.convert(longitude));
+                Log.v("GeoNote","setLatLong 2");
+                m_coordinates =  new LatLng(Common.CoordinateConverter.convert(latitude), Common.CoordinateConverter.convert(longitude));
             }
             else if(latitude.length() != 0 && latitude.contains(String.valueOf('\u00B0')) && latitude.contains(",") &&
                     longitude.length() != 0 && longitude.contains(String.valueOf('\u00B0')) && longitude.contains(",")){
+                Log.v("GeoNote","setLatLong 3");
                 latitude = latitude.replace(String.valueOf('\u00B0') + " ", ":").replace(',','.');
                 longitude = longitude.replace(String.valueOf('\u00B0') + " ", ":").replace(',','.');
                 Log.v("GeoNote","latitude == " + latitude + ", longitude == " + longitude);
-                m_coordinates =  new LatLng(Location.convert(latitude), Location.convert(longitude));
+                m_coordinates =  new LatLng(Common.CoordinateConverter.convert(latitude), Common.CoordinateConverter.convert(longitude));
             }
+            Log.v("GeoNote","setLatLong 4");
         }catch (IllegalArgumentException ex){
+            Log.v("GeoNote", "IllegalArgumentException during setLatLong");
             m_coordinates = new LatLng(0,0);
         }
+        Log.v("GeoNote","setLatLong 5");
     }
 
     public String getTypeString(){

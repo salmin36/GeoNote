@@ -20,6 +20,7 @@
     <string name="single_cache_terrain_name">Terrain</string>
     <string name="error_cache_exists">Cache with same name already exists. Please choose a different name.</string>
     <string name="error_cache_name_empty">Cache name cannot be empty. Please choose a unique name for cache.</string>
+    <string name="error_wrong_minutes">Minutes cannot be smaller than 0 or greater than 60.</string>
 
     <string name="user_menu_item">User</string>
 

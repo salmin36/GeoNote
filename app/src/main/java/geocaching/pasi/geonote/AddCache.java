@@ -29,18 +29,37 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
     private Cache m_cache;
     private CacheListener m_listener;
     private boolean m_downloadedOnce;
+    private boolean m_downloadStarted;
 
     @Override
     public void gotCache(String result) {
-        if(m_downloadedOnce){
+        Log.v("GeoNote", "gotCache started");
+        //if(m_downloadedOnce){
+            //Log.v("GeoNote", "m_downloadedOnce == " + m_downloadedOnce);
             parseCacheInformationFromString(result);
+            m_downloadStarted = false;
+            //m_downloadedOnce = false;
+            //return;
+        //}
+        /*
+        m_downloadedOnce = true;
+        //Check if there is redirect code 301 or 302
+        int ind1 = result.indexOf(":");
+        if(ind1 == -1){return;}
+        String responseCode = result.substring(0,ind1);
+        if(responseCode.length() == 0){return;}
+        //Then we got redirect and let´s find the proper site
+        int respCode = 0;
+        try{
+             respCode = Integer.parseInt(responseCode);
+        }
+        catch (NumberFormatException ex)
+        {
             return;
         }
-        m_downloadedOnce = true;
-        //Then we got redirect and let´s find the proper site
-        int ind1 = result.indexOf("Object moved to");
-        //Prevents unlimited download loops
-        if(ind1 != -1){
+
+        //Prevents unlimited download loops and does this only if there is redirect
+        if(respCode == 301 || respCode == 302 ){
             Log.v("GeoNote", "gotCache object moved to ");
             ind1 = result.indexOf("\"",ind1);
             if(ind1 != -1){
@@ -57,7 +76,7 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
                     async.execute();
                 }
             }
-        }
+        }*/
     }
 
     public interface CacheListener{
@@ -97,6 +116,7 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
         //Create cache with given arguments
         createCache();
         m_downloadedOnce = false;
+        m_downloadStarted = false;
         builder.setView(inflater.inflate(R.layout.add_remove_cache_layout, null));
         final AlertDialog d = builder.create();
 
@@ -236,8 +256,9 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 Log.v("GeoNote", "focus changed to: " + hasFocus);
-                if(!hasFocus){
-                    getGcAttributes(((EditText)v).getText().toString());
+
+                if(!hasFocus && !m_downloadStarted){
+                    getGcAttributes(((EditText) v).getText().toString());
                 }
             }
         });
@@ -277,6 +298,25 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
                     text.append(".");
                 }
                 else if(s.length() == 6){
+                    //Here check if there is minutes that are 0< or >= 60
+                    try {
+                        Double db = Double.valueOf(((EditText) getDialog().findViewById(R.id.cache_latitude_minutes)).toString());
+                        if(db < 0 || db >= 60)
+                        {
+                            android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getContext());
+                            TextView textView = new TextView(getContext());
+                            textView.setText(getResources().getString(R.string.error_wrong_minutes));
+                            textView.setTextSize(20);
+                            textView.setTextColor(Color.BLACK);
+                            alertDialogBuilder.setCustomTitle(textView);
+                            alertDialogBuilder.show();
+                        }
+                    }
+                    catch(NumberFormatException ex)
+                    {
+                        Log.v("GeoNote", "Error: trying change minute string to double");
+                    }
+                    //Then change focus
                     ((EditText) getDialog().findViewById(R.id.cache_longitude_degree)).requestFocus();
                 }
             }
@@ -339,7 +379,10 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
     }
 
     public void getGcAttributes(String gc){
-        if(gc != null && gc.length() != 0){
+        Log.v("GeoNote","gc code is " + gc);
+        if(gc.length() != 0){
+            Log.v("GeoNote", "Starting download");
+            m_downloadStarted = true;
             AsyncCacheGet async = new AsyncCacheGet();
             //Setting url that is used to connect to server
             async.setGc(gc.toUpperCase());
