@@ -81,10 +81,7 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
         if(result.length() == 0){
             return;
         }
-        //result = result.replaceAll(",", "\n");
         Log.v("GeoNote", "onPostExcute");
-        //Do something with the JSON string
-        //Log.v("GeoNote", result);
         // Notify everybody that may be interested.
         for (HttpCacheListener hl : listeners)
             hl.gotCache(result);
