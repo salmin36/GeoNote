@@ -34,7 +34,7 @@ public class MapFragment extends Fragment implements LocationListener {
     private GoogleMap mMap;
     private View view;
     private Cache m_cacheToBeUpdated;
-    //Used to detemine if map is ready be interacted with
+    //Used to determine if map is ready be interacted with
     private boolean m_measuring;
     private Handler m_handler;
     private Runnable m_runnable;
@@ -71,46 +71,9 @@ public class MapFragment extends Fragment implements LocationListener {
             }catch (SecurityException ex){
                 Log.v("GeoNote", ex.getMessage());
             }
-            /*
-            try{
-                m_locationManager.addGpsStatusListener(new GpsStatus.Listener() {
-                    @Override
-                    public void onGpsStatusChanged(int event) {
-                        try{
-                            if(m_measureCoordinates == null && m_findLocationOnce){
-                                Criteria criteria = new Criteria();
-                                // Getting the name of the best provider
-                                String provider = m_locationManager.getBestProvider(criteria, true);
-                                Location loc = m_locationManager.getLastKnownLocation(provider);
-                                try {
-                                    Log.v("GeoNote", "Move camera to gps position");
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 12.0f));
-                                    //Set to false so that we only move the camera to gps coordinate once
-                                    m_findLocationOnce = false;
-                                } catch (java.lang.IllegalArgumentException ex) {
-                                }
-
-                            }
-                        }catch (SecurityException ex){
-
-                        }
-                    }
-                });
-            }catch (SecurityException ex){
-
-            }*/
-
         }
 
         m_handler = new Handler();
-        /*m_runnable = new Runnable() {
-            @Override
-            public void run() {
-                measureAndUpdate();
-                m_handler.postDelayed(this, 2000);
-            }
-        };*/
-
         m_measuring = false;
         return view;
 
@@ -197,14 +160,6 @@ public class MapFragment extends Fragment implements LocationListener {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-   /*
-        if (mMap != null) {
-            getFragmentManager().beginTransaction()
-                    .remove(getFragmentManager().findFragmentById(R.id.mapView)).commit();
-            mMap = null;
-        }
-     */
     }
 
     @Override
@@ -267,7 +222,6 @@ public class MapFragment extends Fragment implements LocationListener {
                     Log.v("GeoNote", ex.getMessage());
                 }
             }
-            //m_handler.postDelayed(m_runnable, 2000);
             m_measuring = true;
         }
     }
@@ -315,7 +269,6 @@ public class MapFragment extends Fragment implements LocationListener {
     public void stopMeasure(){
         if(m_handler != null){
             Log.v("GeoNote", "StopMeasure");
-            //m_handler.removeCallbacks(m_runnable);
             try {
                 m_locationManager.removeUpdates(this);
             }catch (SecurityException ex)

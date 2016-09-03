@@ -23,13 +23,17 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
     //Used to keep track of registered listeners
     private List<HttpCacheListener> listeners = new ArrayList<HttpCacheListener>();
 
+    private ReportCache m_reportCacheListener = null;
 
     private static final String GEO_BASE_URL = "https://www.geocaching.com/geocache/";
 
     private HttpURLConnection m_urlConnection;
     private String m_url = "";
 
-    //Set gc to url that is to be used to get infromation about single cache
+    private boolean m_getUserSpecificCacheInformation = false;
+
+
+    //Set gc to url that is to be used to get information about single cache
     public void setGc(String gc){
         if(gc != null && gc.length() != 0){
             m_url = GEO_BASE_URL + gc;
@@ -61,7 +65,6 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
                 result.append(line);
 //                Log.v("GeoNote",line);
             }
-
             responseCode = m_urlConnection.getResponseCode();
   //          Log.v("GeoNote", "HTTP response code is " + responseCode);
 
@@ -72,6 +75,9 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
             m_urlConnection.disconnect();
         }
 
+
+
+
         return String.valueOf(responseCode) + ":" + result.toString();
     }
 
@@ -81,14 +87,39 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
         if(result.length() == 0){
             return;
         }
-        Log.v("GeoNote", "onPostExcute");
+
+        int ind1 = result.indexOf("cacheImage");
+        if(ind1 != -1){
+            ind1 = result.indexOf("WptTypes/");
+            if(ind1 != -1){
+                String str = result.substring(ind1 + 9,ind1 + 10);
+                if(str.contains("2"))
+                {
+                    m_getUserSpecificCacheInformation = true;
+                }
+            }
+
+        }
+
+
+
         // Notify everybody that may be interested.
         for (HttpCacheListener hl : listeners)
             hl.gotCache(result);
+
+        if(m_getUserSpecificCacheInformation) {
+            AsyncPreLogin asyncPre = new AsyncPreLogin(m_urlConnection.getURL().toString(), m_reportCacheListener);
+            asyncPre.execute();
+        }
     }
 
     //Function to register listener to this Action
     public void addListener(HttpCacheListener toAdd) {
         listeners.add(toAdd);
+    }
+
+    public void addUniqueListener(ReportCache reportCache)
+    {
+        m_reportCacheListener = reportCache;
     }
 }

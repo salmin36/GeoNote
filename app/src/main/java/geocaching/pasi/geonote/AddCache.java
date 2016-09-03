@@ -21,10 +21,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Created by Pasi on 08/03/2016.
- */
-public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheListener{
+
+public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheListener, ReportCache{
 
     private Cache m_cache;
     private CacheListener m_listener;
@@ -34,49 +32,14 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
     @Override
     public void gotCache(String result) {
         Log.v("GeoNote", "gotCache started");
-        //if(m_downloadedOnce){
-            //Log.v("GeoNote", "m_downloadedOnce == " + m_downloadedOnce);
-            parseCacheInformationFromString(result);
-            m_downloadStarted = false;
-            //m_downloadedOnce = false;
-            //return;
-        //}
-        /*
-        m_downloadedOnce = true;
-        //Check if there is redirect code 301 or 302
-        int ind1 = result.indexOf(":");
-        if(ind1 == -1){return;}
-        String responseCode = result.substring(0,ind1);
-        if(responseCode.length() == 0){return;}
-        //Then we got redirect and let´s find the proper site
-        int respCode = 0;
-        try{
-             respCode = Integer.parseInt(responseCode);
-        }
-        catch (NumberFormatException ex)
-        {
-            return;
-        }
+        parseCacheInformationFromString(result);
+        m_downloadStarted = false;
+    }
 
-        //Prevents unlimited download loops and does this only if there is redirect
-        if(respCode == 301 || respCode == 302 ){
-            Log.v("GeoNote", "gotCache object moved to ");
-            ind1 = result.indexOf("\"",ind1);
-            if(ind1 != -1){
-                ind1 += 32;
-                int ind2 = result.indexOf("\"", ind1);
-                ind1 = result.indexOf("/",ind1);
-                if(ind1 != -1 && ind2 != -1 && ind2 > ind1){
-                    ind1 += 1;
-                    AsyncCacheGet async = new AsyncCacheGet();
-                    Log.v("GeoNote", "So far so good");
-                    Log.v("GeoNote",result.substring(ind1, ind2));
-                    async.setGc(result.substring(ind1, ind2));
-                    async.addListener(this);
-                    async.execute();
-                }
-            }
-        }*/
+    @Override
+    public void locationFound(String location)
+    {
+        updateLocation(location);
     }
 
     public interface CacheListener{
@@ -387,7 +350,10 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
             //Setting url that is used to connect to server
             async.setGc(gc.toUpperCase());
             async.addListener(this);
+            async.addUniqueListener(this);
             async.execute();
+
+
         }
     }
 
@@ -580,6 +546,44 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
         return hint;
     }
 
+
+    private void updateLocation(String location)
+    {
+        Log.v("GeoNote", "updateLocation function called");
+        if(location != null && location.length() != 0)
+        {
+            int latitudeDegrees = 0;
+            Double latitudeMinutes = 0.000;
+            int longitudeDegrees = 0;
+            Double longitudeMinutes = 0.0;
+            //N 61° 26.484 E 023° 50.241
+            char  degree = '\u00B0';
+            int index1 = location.indexOf(degree);
+
+            if(index1 != -1)
+            {
+                latitudeDegrees = Integer.parseInt(location.substring(1, index1).trim());
+                int index2 = location.indexOf("E", ++index1);
+                if(index2 != -1)
+                {
+                    latitudeMinutes = Double.parseDouble(location.substring(index1, index2).trim());
+                    index1 = location.indexOf(degree, ++index2);
+                    if(index1 != -1)
+                    {
+                        longitudeDegrees = Integer.parseInt(location.substring(index2, index1).trim());
+                        if(index1 > index2)
+                        {
+                            longitudeMinutes = Double.parseDouble(location.substring(index1 + 1, location.length()).trim());
+                        }
+                    }
+                }
+            }
+            ((EditText) getDialog().findViewById(R.id.cache_latitude_degree)).setText("" + latitudeDegrees);
+            ((EditText) getDialog().findViewById(R.id.cache_latitude_minutes)).setText("" + latitudeMinutes);
+            ((EditText) getDialog().findViewById(R.id.cache_longitude_degree)).setText("" + longitudeDegrees);
+            ((EditText) getDialog().findViewById(R.id.cache_longitude_minutes)).setText("" + longitudeMinutes);
+        }
+    }
 
     /* This function changes ui type spinner so that the given type number corresponds to right type
     *

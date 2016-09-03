@@ -10,5 +10,6 @@
         <item name="android:background">#00bfff</item>
     </style>
     <color name="DefaultTextColor">#ffffff</color>
+    <color name="BlueHighlighter">#3399ff</color>
 
 </resources>

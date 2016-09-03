@@ -11,53 +11,91 @@
         android:hint="@string/cache_name_placeholder"
         android:textColor="@color/DefaultTextColor"
         />
-    <EditText
-        android:id="@+id/cacheGc"
-        android:textSize="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cacheName"
-        android:hint="@string/cache_gc_placeholder"
-        android:textColor="@color/DefaultTextColor"/>
 
+    <View
+        android:id="@+id/upperHorizontalDivider"
+        android:layout_width="fill_parent"
+        android:layout_height="5px"
+        android:background="@color/BlueHighlighter"
+        android:layout_below="@id/cacheName"/>
+
+    <View
+        android:id="@+id/latitudeHorizontalSpring"
+        android:layout_width="30dp"
+        android:layout_height="10dp"
+        android:layout_below="@id/upperHorizontalDivider"/>
     <TextView
         android:id="@+id/cache_n"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/DefaultTextColor"
         android:text="N"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/cacheGc"/>
-    <EditText
-        android:id="@+id/cache_latitude_degree"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:layout_alignBaseline="@id/cache_n"
-        android:layout_toRightOf="@id/cache_n"
-        android:hint="00"
-        android:textColor="@color/DefaultTextColor"
-        android:numeric="integer"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/upperHorizontalDivider"
+        android:layout_toRightOf="@id/latitudeHorizontalSpring"
         />
-    <TextView
-        android:id="@+id/cache_degree_sign_latitude"
+
+    <RelativeLayout
+        android:id="@+id/latitudeContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/cache_latitude_degree"
-        android:layout_toRightOf="@id/cache_latitude_degree"
-        android:textColor="@color/DefaultTextColor"
-        android:text=""/>
+        android:layout_toRightOf="@id/cache_n"
+        android:layout_alignBaseline="@id/cache_n"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/BlueHighlighter">
+        <EditText
+            android:id="@+id/cache_latitude_degree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:hint="00"
+            android:textColor="@color/DefaultTextColor"
+            android:numeric="integer"
+
+            />
+        <TextView
+            android:id="@+id/cache_degree_sign_latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/cache_latitude_degree"
+            android:layout_toRightOf="@id/cache_latitude_degree"
+            android:textColor="@color/DefaultTextColor"
+            android:text=""
+            />
+
+        <EditText
+            android:id="@+id/cache_latitude_minutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:layout_toRightOf="@id/cache_degree_sign_latitude"
+            android:hint="00.0000"
+            android:textColor="@color/DefaultTextColor"
+            android:numeric="decimal"
+            />
+    </RelativeLayout>
+
+
 
     <EditText
-        android:id="@+id/cache_latitude_minutes"
+        android:id="@+id/cacheGc"
+        android:textSize="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:layout_alignBaseline="@id/cache_n"
-        android:layout_toRightOf="@id/cache_degree_sign_latitude"
-        android:hint="00.0000"
+        android:layout_toRightOf="@id/latitudeContainer"
+        android:layout_alignBaseline="@id/latitudeContainer"
+        android:layout_marginLeft="20dp"
+        android:hint="@string/cache_gc_placeholder"
         android:textColor="@color/DefaultTextColor"
-        android:numeric="decimal"/>
+        />
+
+    <View
+        android:id="@+id/latitudeHorizontalSpring2"
+        android:layout_width="30dp"
+        android:layout_height="10dp"
+        android:layout_below="@id/upperHorizontalDivider"
+        android:layout_toRightOf="@id/cacheGc"/>
 
     <TextView
         android:id="@+id/cache_e"
@@ -65,39 +103,43 @@
         android:layout_height="wrap_content"
         android:textColor="@color/DefaultTextColor"
         android:text="E"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/cache_n"/>
-    <EditText
-        android:id="@+id/cache_longitude_degree"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/cache_n"
+        android:layout_alignLeft="@id/cache_n"/>
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:textColor="@color/DefaultTextColor"
         android:layout_alignBaseline="@id/cache_e"
         android:layout_toRightOf="@id/cache_e"
-        android:hint="00"
-        android:numeric="integer"
-        />
-    <TextView
-        android:id="@+id/cache_degree_sign_longitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/cache_longitude_degree"
-        android:layout_toRightOf="@id/cache_longitude_degree"
-        android:textColor="@color/DefaultTextColor"
-        android:text=""/>
-
-    <EditText
-        android:id="@+id/cache_longitude_minutes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:layout_alignBaseline="@id/cache_e"
-        android:layout_toRightOf="@id/cache_degree_sign_longitude"
-        android:hint="00.0000"
-        android:textColor="@color/DefaultTextColor"
-        android:numeric="decimal"/>
-
+        android:layout_alignLeft="@+id/latitudeContainer"
+        android:background="@color/BlueHighlighter">
+        <EditText
+            android:id="@+id/cache_longitude_degree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:textColor="@color/DefaultTextColor"
+            android:hint="00"
+            android:numeric="integer"
+            />
+        <TextView
+            android:id="@+id/cache_degree_sign_longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/cache_longitude_degree"
+            android:layout_toRightOf="@id/cache_longitude_degree"
+            android:textColor="@color/DefaultTextColor"
+            android:text=""/>
+        <EditText
+            android:id="@+id/cache_longitude_minutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:layout_toRightOf="@id/cache_degree_sign_longitude"
+            android:hint="00.0000"
+            android:textColor="@color/DefaultTextColor"
+            android:numeric="decimal"/>
+    </RelativeLayout>
     <Spinner
         android:id="@+id/cache_type_spinner"
         android:layout_width="wrap_content"
@@ -113,7 +155,7 @@
         android:textSize="16dp"
         android:layout_below="@id/cache_e"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:text="@string/cache_difficulty_spinner_name"
         android:textColor="@color/DefaultTextColor"
         />
@@ -123,7 +165,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/cache_difficulty_spinner_name"
         android:layout_toRightOf="@id/cache_difficulty_spinner_name"
-        android:textColor="@color/DefaultTextColor"/>
+        android:textColor="@color/DefaultTextColor"
+        android:background="@color/BlueHighlighter"/>
 
     <TextView
         android:id="@+id/cache_size_spinner_name"
@@ -140,7 +183,8 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/cache_size_spinner_name"
         android:layout_alignBaseline="@id/cache_size_spinner_name"
-        android:textColor="@color/DefaultTextColor"/>
+        android:textColor="@color/DefaultTextColor"
+        android:background="@color/BlueHighlighter"/>
 
     <TextView
         android:id="@+id/cache_terrain_spinner_name"
@@ -158,7 +202,8 @@
         android:layout_toRightOf="@id/cache_terrain_spinner_name"
         android:layout_alignBaseline="@id/cache_terrain_spinner_name"
         android:layout_alignLeft="@id/cache_difficulty_spinner"
-        android:textColor="@color/DefaultTextColor"/>
+        android:textColor="@color/DefaultTextColor"
+        android:background="@color/BlueHighlighter"/>
     />
 
     <TextView
@@ -176,21 +221,18 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/cache_winter_spinner_name"
         android:layout_alignBaseline="@id/cache_winter_spinner_name"
-        android:textColor="@color/DefaultTextColor"/>
+        android:textColor="@color/DefaultTextColor"
+        android:background="@color/BlueHighlighter"/>
 
-    <View
-        android:id="@+id/horizontal_divider"
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="#000000"
-        android:layout_below="@id/cache_winter_spinner_name"/>
     <EditText
         android:id="@+id/cache_add_note"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/horizontal_divider"
+        android:layout_below="@id/cache_winter_spinner_name"
         android:hint="@string/cache_add_note_placeholder"
         android:padding="2px"
+        android:layout_margin="20dp"
         android:textColor="@color/DefaultTextColor"
+        android:background="@color/BlueHighlighter"
         />
 </RelativeLayout>
