@@ -2,6 +2,7 @@ package geocaching.pasi.geonote;
 
 import android.location.Location;
 import android.util.Log;
+import android.widget.Spinner;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -215,6 +216,20 @@ public class Cache {
         return "";
     }
 
+    public int getTypeInt(){
+        switch (m_type){
+            case MULTI: return 3;
+            case MYSTERY: return 8;
+            case OTHER: return 0;
+            case REGULAR: return 2;
+            case HAPPENING: return 6;
+        }
+        return 0;
+    }
+
+
+
+
     public void setType(String type){
         if(type.toLowerCase().contains("multi")){
             m_type = Common.Type.MULTI;
@@ -232,6 +247,31 @@ public class Cache {
             m_type = Common.Type.OTHER;
         }
     }
+
+    public void setType(int type){
+        switch (type){
+            //Regular cache
+            case 2:
+                m_type = Common.Type.REGULAR;
+                break;
+            //Multi cache
+            case 3:
+                m_type = Common.Type.MULTI;
+                break;
+            //Happening cache
+            case 6:
+                m_type = Common.Type.HAPPENING;
+                break;
+            //Mystery cache
+            case 8:
+                m_type = Common.Type.MYSTERY;
+                break;
+            default:
+                m_type = Common.Type.OTHER;
+                break;
+        }
+    }
+
 
     public void setCoordinates(LatLng coord){
         try{

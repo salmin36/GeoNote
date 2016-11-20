@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +44,10 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         int responseCode = 0;
+        m_getUserSpecificCacheInformation = true;
         //If for some reason url is empty then just return empty string without trying to download anything
         if(m_url.length() == 0){
+            Log.v("GeoNote", "URL was empty");
             return "";
         }
 
@@ -52,9 +55,10 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
 
         try {
             URL url = new URL(m_url);
-            Log.v("GeoNote", "URL " + url);
+            Log.v("GeoNote", "AsyncCahceGet.doIndBackground:  URL " + url);
 
             m_urlConnection = (HttpURLConnection) url.openConnection();
+            m_urlConnection.setConnectTimeout(10000);
             m_urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0");
             InputStream in = new BufferedInputStream(m_urlConnection.getInputStream());
 
@@ -63,51 +67,39 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
             String line;
             while ((line = reader.readLine()) != null) {
                 result.append(line);
-//                Log.v("GeoNote",line);
+                Log.v("GeoNote",line);
             }
             responseCode = m_urlConnection.getResponseCode();
-  //          Log.v("GeoNote", "HTTP response code is " + responseCode);
-
-        }catch( Exception e) {
+            Log.v("GeoNote", "HTTP response code is " + responseCode);
+        }
+        catch (SocketTimeoutException ex){
+            m_getUserSpecificCacheInformation = false;
+        }
+        catch( Exception e) {
             e.printStackTrace();
         }
         finally {
             m_urlConnection.disconnect();
         }
 
-
-
-
         return String.valueOf(responseCode) + ":" + result.toString();
     }
 
     @Override
     protected void onPostExecute(String result) {
+        Log.v("GeoNote", "AsyncCahceGet.onPostExecute");
         //If nothing was returned from doInBackground function then:
         if(result.length() == 0){
+            Log.v("GeoNote", "AsyncCahceGet.onPostExecute:  result.length == 0");
             return;
         }
-
-        int ind1 = result.indexOf("cacheImage");
-        if(ind1 != -1){
-            ind1 = result.indexOf("WptTypes/");
-            if(ind1 != -1){
-                String str = result.substring(ind1 + 9,ind1 + 10);
-                if(str.contains("2"))
-                {
-                    m_getUserSpecificCacheInformation = true;
-                }
-            }
-
-        }
-
-
 
         // Notify everybody that may be interested.
         for (HttpCacheListener hl : listeners)
             hl.gotCache(result);
 
         if(m_getUserSpecificCacheInformation) {
+            Log.v("GeoNote", "AsyncCahceGet.onPostExecute:  Doing asyncPreLogin");
             AsyncPreLogin asyncPre = new AsyncPreLogin(m_urlConnection.getURL().toString(), m_reportCacheListener);
             asyncPre.execute();
         }

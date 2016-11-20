@@ -62,12 +62,16 @@ public class MapFragment extends Fragment implements LocationListener {
         m_locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Log.v("GeoNote", "isGPSEnabled == " + m_locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
         //Find location once and zoom into that only if there is no point selected where to calculate distance
+
+        // Does this really do anything
         if(m_locationManager != null){
             try{
                 Criteria criteria = new Criteria();
                 // Getting the name of the best provider
                 String provider = m_locationManager.getBestProvider(criteria, true);
-                Location loc = m_locationManager.getLastKnownLocation(provider);
+                if(provider != null) {
+                    Location loc = m_locationManager.getLastKnownLocation(provider);
+                }
             }catch (SecurityException ex){
                 Log.v("GeoNote", ex.getMessage());
             }
@@ -215,8 +219,8 @@ public class MapFragment extends Fragment implements LocationListener {
                 try {
                     Criteria criteria = new Criteria();
                     // Getting the name of the best provider
-                    String provider = m_locationManager.getBestProvider(criteria, true);
-                    Location loc = m_locationManager.getLastKnownLocation(provider);
+                    //String provider = m_locationManager.getBestProvider(criteria, true);
+                    //Location loc = m_locationManager.getLastKnownLocation(provider);
                     m_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, this);
                 } catch (SecurityException ex) {
                     Log.v("GeoNote", ex.getMessage());
@@ -239,12 +243,14 @@ public class MapFragment extends Fragment implements LocationListener {
         Criteria criteria = new Criteria();
         // Getting the name of the best provider
         String provider = m_locationManager.getBestProvider(criteria, true);
-
-        try {
-             location = m_locationManager.getLastKnownLocation(provider);
-        }catch (SecurityException ex){
-            location = null;
+        if(provider != null ){
+            try {
+                location = m_locationManager.getLastKnownLocation(provider);
+            }catch (SecurityException ex){
+                location = null;
+            }
         }
+
         if(location == null){
             return;
         }
