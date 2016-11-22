@@ -13,20 +13,23 @@
         android:textSize="20dp"
         android:textColor="@color/DefaultTextColor"/>
     <View
+        android:id="@+id/upperHorizontalDivider"
+        android:layout_width="fill_parent"
+        android:layout_height="5px"
+        style="@style/buttonColor"
+        android:layout_below="@+id/single_cache_name"/>
+
+    <View
         android:id="@+id/single_cache_circle"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_alignBaseline="@id/single_cache_name"
+        android:layout_alignBottom="@+id/single_cache_name"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="5dp"
         android:textColor="@color/DefaultTextColor"
+        style="@style/buttonColor"
         />
-    <TextView
-        android:id="@+id/single_cacheGc"
-        android:textSize="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/single_cache_name"
-        android:textColor="@color/DefaultTextColor"/>
+
     <TextView
         android:id="@+id/single_cache_n"
         android:layout_width="wrap_content"
@@ -34,7 +37,7 @@
         android:textColor="@color/DefaultTextColor"
         android:text="N"
         android:layout_marginTop="10dp"
-        android:layout_below="@id/single_cacheGc"/>
+        android:layout_below="@+id/upperHorizontalDivider"/>
     <TextView
         android:id="@+id/single_cache_latitude"
         android:layout_width="wrap_content"
@@ -43,7 +46,22 @@
         android:layout_alignBaseline="@id/single_cache_n"
         android:layout_toRightOf="@id/single_cache_n"
         android:layout_marginLeft="10dp"
-        android:textColor="@color/DefaultTextColor"/>
+        android:textColor="@color/DefaultTextColor"
+        android:background="@drawable/button_border_blue"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/single_cacheGc"
+        android:textSize="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/single_cache_latitude"
+        android:layout_toRightOf="@id/single_cache_latitude"
+        android:layout_marginLeft="50px"
+        android:textColor="@color/DefaultTextColor"
+        android:background="@drawable/button_border_blue"
+        android:padding="5dp"/>
+
     <TextView
         android:id="@+id/single_cache_e"
         android:layout_width="wrap_content"
@@ -61,6 +79,8 @@
         android:layout_toRightOf="@id/single_cache_e"
         android:layout_marginLeft="10dp"
         android:textColor="@color/DefaultTextColor"
+        android:background="@drawable/button_border_blue"
+        android:padding="5dp"
         />
 
     <TextView
@@ -78,7 +98,9 @@
         android:layout_alignBaseline="@id/single_cache_difficulty_name"
         android:layout_toRightOf="@id/single_cache_difficulty_name"
         android:layout_marginLeft="10dp"
-        android:textColor="@color/DefaultTextColor"/>
+        android:textColor="@color/DefaultTextColor"
+        android:background="@drawable/button_border_blue"
+        android:padding="5dp"/>
 
     <TextView
         android:id="@+id/single_cache_size_name"
@@ -97,7 +119,9 @@
         android:layout_alignBaseline="@id/single_cache_size_name"
         android:layout_toRightOf="@id/single_cache_size_name"
         android:layout_marginLeft="10dp"
-        android:textColor="@color/DefaultTextColor"/>
+        android:textColor="@color/DefaultTextColor"
+        android:background="@drawable/button_border_blue"
+        android:padding="5dp"/>
 
     <TextView
         android:id="@+id/single_cache_terrain_name"
@@ -113,8 +137,10 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/single_cache_terrain_name"
         android:layout_toRightOf="@id/single_cache_terrain_name"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/DefaultTextColor"/>
+        android:layout_alignLeft="@+id/single_cache_difficulty_value"
+        android:textColor="@color/DefaultTextColor"
+        android:background="@drawable/button_border_blue"
+        android:padding="5dp"/>
 
 
     <TextView
@@ -124,7 +150,7 @@
         android:text="@string/cache_winter_spinner_name"
         android:textColor="@color/DefaultTextColor"
         android:layout_below="@id/single_cache_terrain_name"
-        android:layout_alignParentLeft="true"
+        android:layout_alignLeft="@+id/single_cache_terrain_name"
         android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/single_cache_winter_value"
@@ -132,18 +158,12 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/single_cache_winter_name"
         android:layout_toRightOf="@id/single_cache_winter_name"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/DefaultTextColor"/>
-
-
-    <TextView
-        android:id="@+id/single_cache_note"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/single_cache_winter_name"
-        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@+id/single_cache_size_value"
         android:textColor="@color/DefaultTextColor"
-        />
+        android:background="@drawable/button_border_blue"
+        android:padding="5dp"/>
+
+
 
     <Button
         android:id="@+id/single_cache_remove_button"
@@ -163,6 +183,20 @@
         android:layout_alignParentRight="true"
         android:text="@string/single_cache_modify_button_text"
         style="@style/buttonColor"
+        />
+
+
+    <TextView
+        android:id="@+id/single_cache_note"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/single_cache_winter_name"
+        android:layout_above="@+id/single_cache_modify_button"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/DefaultTextColor"
+        android:background="@drawable/button_border_blue"
+        android:padding="10dp"
         />
 
 </RelativeLayout>

@@ -107,6 +107,7 @@
         android:layout_below="@id/cache_n"
         android:layout_alignLeft="@id/cache_n"/>
     <RelativeLayout
+        android:id="@+id/gps_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/cache_e"
@@ -148,87 +149,106 @@
         android:layout_alignParentRight="true"
         android:textColor="@color/DefaultTextColor"/>
 
-    <TextView
-        android:id="@+id/cache_difficulty_spinner_name"
-        android:layout_width="wrap_content"
+
+
+    <RelativeLayout
+        android:id="@+id/add_remove_attribure_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:layout_below="@id/cache_e"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="30dp"
-        android:text="@string/cache_difficulty_spinner_name"
-        android:textColor="@color/DefaultTextColor"
+        android:layout_below="@id/gps_layout"
+        android:layout_marginTop="10dp">
+
+        <View
+            android:id="@+id/latitudeHorizontalSpring3"
+            android:layout_width="30dp"
+            android:layout_height="10dp"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:id="@+id/cache_difficulty_spinner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/latitudeHorizontalSpring3"
+            android:text="@string/cache_difficulty_spinner_name"
+            android:textColor="@color/DefaultTextColor"
+            />
+        <Spinner
+            android:id="@+id/cache_difficulty_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/cache_difficulty_spinner_name"
+            android:layout_toRightOf="@id/cache_difficulty_spinner_name"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/DefaultTextColor"
+            android:background="@color/BlueHighlighter"/>
+
+        <TextView
+            android:id="@+id/cache_size_spinner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cache_difficulty_spinner"
+            android:layout_alignBaseline="@id/cache_difficulty_spinner_name"
+            android:layout_marginRight="10dp"
+            android:text="@string/cache_size_spinner_name"
+            android:textColor="@color/DefaultTextColor"/>
+
+        <Spinner
+            android:id="@+id/cache_size_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cache_size_spinner_name"
+            android:layout_alignBaseline="@id/cache_size_spinner_name"
+            android:textColor="@color/DefaultTextColor"
+            android:background="@color/BlueHighlighter"/>
+
+        <TextView
+            android:id="@+id/cache_terrain_spinner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/latitudeHorizontalSpring3"
+            android:layout_below="@id/cache_difficulty_spinner_name"
+            android:text="@string/cache_terrain_spinner_name"
+            android:textColor="@color/DefaultTextColor"/>
+        <Spinner
+            android:id="@+id/cache_terrain_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cache_terrain_spinner_name"
+            android:layout_alignBottom="@id/cache_terrain_spinner_name"
+            android:layout_alignLeft="@id/cache_difficulty_spinner"
+            android:textColor="@color/DefaultTextColor"
+            android:background="@color/BlueHighlighter"/>
         />
-    <Spinner
-        android:id="@+id/cache_difficulty_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/cache_difficulty_spinner_name"
-        android:layout_toRightOf="@id/cache_difficulty_spinner_name"
-        android:textColor="@color/DefaultTextColor"
-        android:background="@color/BlueHighlighter"/>
 
-    <TextView
-        android:id="@+id/cache_size_spinner_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cache_difficulty_spinner"
-        android:layout_alignBaseline="@id/cache_difficulty_spinner"
-        android:text="@string/cache_size_spinner_name"
-        android:textColor="@color/DefaultTextColor"/>
+        <TextView
+            android:id="@+id/cache_winter_spinner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cache_winter_spinner_name"
+            android:layout_toRightOf="@id/latitudeHorizontalSpring3"
+            android:layout_below="@id/cache_terrain_spinner_name"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/DefaultTextColor"/>
+        <Spinner
+            android:id="@+id/cache_winter_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/cache_size_spinner"
+            android:layout_alignBaseline="@id/cache_winter_spinner_name"
+            android:textColor="@color/DefaultTextColor"
+            android:background="@color/BlueHighlighter"/>
 
-    <Spinner
-        android:id="@+id/cache_size_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cache_size_spinner_name"
-        android:layout_alignBaseline="@id/cache_size_spinner_name"
-        android:textColor="@color/DefaultTextColor"
-        android:background="@color/BlueHighlighter"/>
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/cache_terrain_spinner_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/cache_difficulty_spinner_name"
-        android:text="@string/cache_terrain_spinner_name"
-        android:textColor="@color/DefaultTextColor"/>
-    <Spinner
-        android:id="@+id/cache_terrain_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cache_terrain_spinner_name"
-        android:layout_alignBaseline="@id/cache_terrain_spinner_name"
-        android:layout_alignLeft="@id/cache_difficulty_spinner"
-        android:textColor="@color/DefaultTextColor"
-        android:background="@color/BlueHighlighter"/>
-    />
-
-    <TextView
-        android:id="@+id/cache_winter_spinner_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cache_winter_spinner_name"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/cache_terrain_spinner_name"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/DefaultTextColor"/>
-    <Spinner
-        android:id="@+id/cache_winter_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/cache_winter_spinner_name"
-        android:layout_alignBaseline="@id/cache_winter_spinner_name"
-        android:textColor="@color/DefaultTextColor"
-        android:background="@color/BlueHighlighter"/>
 
     <EditText
         android:id="@+id/cache_add_note"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/cache_winter_spinner_name"
+        android:layout_below="@id/add_remove_attribure_layout"
         android:hint="@string/cache_add_note_placeholder"
         android:padding="2px"
         android:layout_margin="20dp"
