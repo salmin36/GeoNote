@@ -6,7 +6,7 @@
     <View
         android:id="@+id/horizontal_divider_list"
         android:layout_width="fill_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_marginTop="20px"
         android:layout_alignParentTop="true"
         style="@style/buttonColor"/>

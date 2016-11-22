@@ -27,7 +27,7 @@
     <View
         android:id="@+id/horizontal_divider_list"
         android:layout_width="fill_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="4dp"
         style="@style/buttonColor"/>

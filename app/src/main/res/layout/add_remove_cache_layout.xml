@@ -10,13 +10,14 @@
         android:layout_alignParentTop="true"
         android:hint="@string/cache_name_placeholder"
         android:textColor="@color/DefaultTextColor"
+        android:maxWidth="500px"
         />
 
     <View
         android:id="@+id/upperHorizontalDivider"
         android:layout_width="fill_parent"
-        android:layout_height="5px"
-        android:background="@color/BlueHighlighter"
+        android:layout_height="3dp"
+        style="@style/buttonColor"
         android:layout_below="@id/cacheName"/>
 
     <View
@@ -43,7 +44,7 @@
         android:layout_alignBaseline="@id/cache_n"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="30dp"
-        android:background="@color/BlueHighlighter">
+        android:background="@drawable/button_fill_blue">
         <EditText
             android:id="@+id/cache_latitude_degree"
             android:layout_width="wrap_content"
@@ -113,7 +114,7 @@
         android:layout_alignBaseline="@id/cache_e"
         android:layout_toRightOf="@id/cache_e"
         android:layout_alignLeft="@+id/latitudeContainer"
-        android:background="@color/BlueHighlighter">
+        android:background="@drawable/button_fill_blue">
         <EditText
             android:id="@+id/cache_longitude_degree"
             android:layout_width="wrap_content"
@@ -182,7 +183,7 @@
             android:layout_toRightOf="@id/cache_difficulty_spinner_name"
             android:layout_marginRight="10dp"
             android:textColor="@color/DefaultTextColor"
-            android:background="@color/BlueHighlighter"/>
+            android:background="@drawable/button_fill_blue"/>
 
         <TextView
             android:id="@+id/cache_size_spinner_name"
@@ -201,7 +202,7 @@
             android:layout_toRightOf="@id/cache_size_spinner_name"
             android:layout_alignBaseline="@id/cache_size_spinner_name"
             android:textColor="@color/DefaultTextColor"
-            android:background="@color/BlueHighlighter"/>
+            android:background="@drawable/button_fill_blue"/>
 
         <TextView
             android:id="@+id/cache_terrain_spinner_name"
@@ -220,7 +221,7 @@
             android:layout_alignBottom="@id/cache_terrain_spinner_name"
             android:layout_alignLeft="@id/cache_difficulty_spinner"
             android:textColor="@color/DefaultTextColor"
-            android:background="@color/BlueHighlighter"/>
+            android:background="@drawable/button_fill_blue"/>
         />
 
         <TextView
@@ -239,7 +240,7 @@
             android:layout_alignLeft="@id/cache_size_spinner"
             android:layout_alignBaseline="@id/cache_winter_spinner_name"
             android:textColor="@color/DefaultTextColor"
-            android:background="@color/BlueHighlighter"/>
+            android:background="@drawable/button_fill_blue"/>
 
     </RelativeLayout>
 
@@ -250,9 +251,9 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/add_remove_attribure_layout"
         android:hint="@string/cache_add_note_placeholder"
-        android:padding="2px"
+        android:padding="10px"
         android:layout_margin="20dp"
         android:textColor="@color/DefaultTextColor"
-        android:background="@color/BlueHighlighter"
+        android:background="@drawable/button_fill_blue"
         />
 </RelativeLayout>
