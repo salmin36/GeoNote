@@ -2,12 +2,14 @@ package geocaching.pasi.geonote;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.CalendarContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.InflateException;
@@ -23,8 +25,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -42,6 +48,7 @@ public class MapFragment extends Fragment implements LocationListener {
     private LocationManager m_locationManager;
     private boolean m_findLocationOnce = true;
     private LatLng m_myCurrentLocation;
+    private Polyline my_betweenLine = null;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,6 +108,7 @@ public class MapFragment extends Fragment implements LocationListener {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.INVISIBLE);
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getChildFragmentManager()
@@ -238,6 +246,8 @@ public class MapFragment extends Fragment implements LocationListener {
         if(m_measureCoordinates == null || m_measureCoordinates.latitude == 0.0 && m_measureCoordinates.longitude == 0.0){
             ((TextView) view.findViewById(R.id.map_distance_screen)).setText("");
             ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.INVISIBLE);
+            my_betweenLine.remove();
+            my_betweenLine = null;
             return;
         }
         ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.VISIBLE);
@@ -272,6 +282,25 @@ public class MapFragment extends Fragment implements LocationListener {
             resultString =  precision.format(distance) + " m";
         }
         ((TextView) view.findViewById(R.id.map_distance_screen)).setText(resultString);
+        drawLineBetweenPoints(m_myCurrentLocation,m_measureCoordinates, mMap);
+    }
+
+    private void drawLineBetweenPoints(LatLng currentLocation, LatLng measureCoordinates, GoogleMap map) {
+        if(currentLocation != null && measureCoordinates != null && map != null){
+            if(my_betweenLine == null) {
+                my_betweenLine = map.addPolyline(new PolylineOptions()
+                        .add(currentLocation, measureCoordinates)
+                        .width(5)
+                        .color(Color.parseColor("#00bfff")));
+            }
+            else{
+                my_betweenLine.remove();
+                my_betweenLine = map.addPolyline(new PolylineOptions()
+                        .add(currentLocation, measureCoordinates)
+                        .width(5)
+                        .color(Color.parseColor("#00bfff")));
+            }
+        }
     }
 
     //Used to stop measuring distance
