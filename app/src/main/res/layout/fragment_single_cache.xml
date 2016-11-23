@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:textSize="20dp"
-        android:textColor="@color/DefaultTextColor"/>
+        android:textColor="@color/DefaultTextColor"
+        android:paddingRight="40dp"/>
     <View
         android:id="@+id/upperHorizontalDivider"
         android:layout_width="fill_parent"

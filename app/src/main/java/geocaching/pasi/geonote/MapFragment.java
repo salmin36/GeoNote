@@ -79,6 +79,7 @@ public class MapFragment extends Fragment implements LocationListener {
 
         m_handler = new Handler();
         m_measuring = false;
+        ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.INVISIBLE);
         return view;
 
     }
@@ -226,6 +227,7 @@ public class MapFragment extends Fragment implements LocationListener {
                     Log.v("GeoNote", ex.getMessage());
                 }
             }
+            ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.VISIBLE);
             m_measuring = true;
         }
     }
@@ -235,9 +237,10 @@ public class MapFragment extends Fragment implements LocationListener {
 
         if(m_measureCoordinates == null || m_measureCoordinates.latitude == 0.0 && m_measureCoordinates.longitude == 0.0){
             ((TextView) view.findViewById(R.id.map_distance_screen)).setText("");
+            ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.INVISIBLE);
             return;
         }
-
+        ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.VISIBLE);
         Location location = null;
         // Creating a criteria object to retrieve provider
         Criteria criteria = new Criteria();
@@ -280,6 +283,7 @@ public class MapFragment extends Fragment implements LocationListener {
             }catch (SecurityException ex)
             {}
             m_measuring = false;
+            ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.INVISIBLE);
         }
     }
 
