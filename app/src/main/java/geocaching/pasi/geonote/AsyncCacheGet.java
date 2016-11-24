@@ -32,6 +32,7 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
     private String m_url = "";
 
     private boolean m_getUserSpecificCacheInformation = false;
+    private User myUser = null;
 
 
     //Set gc to url that is to be used to get information about single cache
@@ -39,6 +40,10 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
         if(gc != null && gc.length() != 0){
             m_url = GEO_BASE_URL + gc;
         }
+    }
+
+    public void setUser(User user){
+        myUser = user;
     }
 
     @Override
@@ -98,9 +103,10 @@ public class AsyncCacheGet extends AsyncTask<String, String, String> {
         for (HttpCacheListener hl : listeners)
             hl.gotCache(result);
 
-        if(m_getUserSpecificCacheInformation) {
+        if(myUser.isValidCredentials()) {
             Log.v("GeoNote", "AsyncCahceGet.onPostExecute:  Doing asyncPreLogin");
             AsyncPreLogin asyncPre = new AsyncPreLogin(m_urlConnection.getURL().toString(), m_reportCacheListener);
+            asyncPre.setUser(myUser);
             asyncPre.execute();
         }
     }

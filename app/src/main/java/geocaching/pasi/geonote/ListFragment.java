@@ -21,6 +21,8 @@ public class ListFragment extends Fragment {
     private Cache m_currentlyShowing;
     private RelativeLayout m_previous;
     private int m_previous_position;
+    private User myUser;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -64,11 +66,15 @@ public class ListFragment extends Fragment {
         return m_fragmentsView;
     }
 
+    public void setArguments(User user){
+        myUser = user;
+    }
+
     private void setHandlers() {
         ((Button)m_fragmentsView.findViewById(R.id.new_list_item_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment newFragment = AddCache.newInstance(new Cache());
+                DialogFragment newFragment = AddCache.newInstance(new Cache(),myUser);
                 newFragment.show(getActivity().getSupportFragmentManager(), "customDialog");
             }
         });

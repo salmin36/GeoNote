@@ -7,4 +7,5 @@ package geocaching.pasi.geonote;
 public interface ReportCache
 {
     public void locationFound(String location);
+    public void showToastMessage(String message);
 }

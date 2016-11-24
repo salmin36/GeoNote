@@ -2,6 +2,7 @@ package geocaching.pasi.geonote;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -32,6 +33,7 @@ public class AsyncTryLogin extends AsyncTask<String, String, String> {
     private static int m_round = 0;
     private String m_urlString = "";
     private ReportCache m_reportCache = null;
+    private User myUser = null;
 
     public void setParameters(String viewState, String viewStateGenerator, String cookie, boolean doAnotherRound, String sessionID, String gspkauth, String urlString, ReportCache reportCache){
         m_viewState = viewState;
@@ -70,47 +72,10 @@ public class AsyncTryLogin extends AsyncTask<String, String, String> {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String line;
             while ((line = reader.readLine()) != null) {
+        //        Log.v("GeoNote", line);
                 result.append(line);
-                //Log.v("GeoNote",line);
             }
 
-            /*
-            Map<String, List<String>> headerFields = m_urlConnection.getHeaderFields();
-            List<String> cookiesHeader = headerFields.get("Set-Cookie");
-            Log.v("GeoNote", "Cookie: ");
-
-            m_cookie = "";
-            for(String cookieHeader : cookiesHeader)
-            {
-                Log.v("GeoNote", cookieHeader);
-                if(cookiesHeader.contains("gspkauth"))
-                {
-                    m_cookie = cookieHeader;
-                }
-            }
-            Log.v("GeoNote", "End cookie");
-
-            Log.v("GeoNote", "Here Post response header");
-            m_cookie = "";
-            for (String key : headerFields.keySet()){
-                for (String value : headerFields.get(key)){
-                    Log.v("GeoNote", key + ":" + value);
-                    if(!m_cookie.contains(value))
-                    {
-                        m_cookie += value + "; ";
-                    }
-
-                }
-            }
-
-            if(m_cookie.charAt(m_cookie.length()-1) == ';')
-            {
-                m_cookie = m_cookie.substring(0,m_cookie.length()-1);
-            }
-            Log.v("GeoNote", "new cookies: " + m_cookie);
-
-            Log.v("GeoNote", "Response code: " + m_urlConnection.getResponseCode());
-            */
 
             Map<String, List<String>> headerFields = m_urlConnection.getHeaderFields();
             List<String> cookiesHeader = headerFields.get("Set-Cookie");
@@ -177,6 +142,7 @@ public class AsyncTryLogin extends AsyncTask<String, String, String> {
 
     private void firstTimePost() throws IOException {
         Log.v("GeoNote","firsTime");
+        Log.v("GeoNote",myUser.getUsername() + ":" + myUser.getMyPassword());
         int index1 = m_cookie.indexOf("ASP.NET_SessionId");
         if(index1 != -1)
         {
@@ -185,8 +151,11 @@ public class AsyncTryLogin extends AsyncTask<String, String, String> {
             Log.v("GeoNote", "m_cookie == " + m_cookie);
         }
 
+
         URL url = new URL(GEO_BASE_URL);
-        String postData = "__EVENTTARGET&__EVENTARGUMENT&ctl00$ContentBody$tbPassword=pasi3064&ctl00$ContentBody$tbUsername=salmin36&ctl00$ContentBody$cbRememberMe=On&ctl00$ContentBody$btnSignIn=Login";
+        String postData = "__EVENTTARGET&__EVENTARGUMENT&ctl00$ContentBody$tbPassword="
+            + myUser.getMyPassword() + "&ctl00$ContentBody$tbUsername=" + myUser.getUsername() +
+                "&ctl00$ContentBody$cbRememberMe=On&ctl00$ContentBody$btnSignIn=Login";
         Log.v("GeoNote", "Here is data to be posted");
         Log.v("GeoNote", postData);
 
@@ -214,8 +183,7 @@ public class AsyncTryLogin extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         Log.v("GeoNote", "AsyncTryLogin.onPostExcute");
         int responseCode = 0;
-        //Log.v("GeoNote", result);
-        if(result.indexOf("salmin36") != -1){
+        if(result.indexOf(myUser.getUsername()) != -1){
             Log.v("GeoNote", "Found username ");
         }
         else{
@@ -228,19 +196,28 @@ public class AsyncTryLogin extends AsyncTask<String, String, String> {
             Log.v("GeoNote", "Response code: "+ responseCode);
         }
         catch(IOException ex){}
-        if( m_doAnotherRound)
+        if( m_doAnotherRound && myUser.isValidCredentials())
         {
             Log.v("GeoNote", "Another go, jee");
             AsyncTryLogin async = new AsyncTryLogin();
             async.setParameters(m_viewState, m_viewStateGenerator, m_cookie, m_doAnotherRound, m_sessionId, m_gspkauth, m_urlString, m_reportCache);
-
+            async.setUser(myUser);
             async.execute();
             return;
         }
 
-
-
-        int index1 = result.indexOf("<span id=\"uxLatLon\">");
+        int index1 = result.indexOf("var isLoggedIn = false");
+        if(index1 != -1){
+            Log.v("GeoNote", "isLogged == false");
+            myUser.setValidCredential(false);
+            m_reportCache.showToastMessage("Logging failed");
+        }
+        index1 = result.indexOf("var isLoggedIn = true");
+        if(index1 != -1){
+            Log.v("GeoNote", "isLogged == true");
+            m_reportCache.showToastMessage("Logged in");
+        }
+        index1 = result.indexOf("<span id=\"uxLatLon\">");
         if(index1 != -1)
         {
             Log.v("GeoNote", "Found location tag");
@@ -256,6 +233,7 @@ public class AsyncTryLogin extends AsyncTask<String, String, String> {
 
             }
         }
+
         else
         {
             Log.v("GeoNote", "Didn´t find location");
@@ -284,4 +262,7 @@ public class AsyncTryLogin extends AsyncTask<String, String, String> {
         return result.toString();
     }
 
+    public void setUser(User user) {
+        myUser = user;
+    }
 }

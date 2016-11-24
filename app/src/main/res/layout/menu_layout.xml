@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is menu"
+        android:textSize="16dp"
+        android:layout_centerHorizontal="true"/>
+    <Button
+        android:id="@+id/menu_cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        style="@style/buttonColor"/>
+    <Button
+        android:id="@+id/menu_update_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Udate"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        style="@style/buttonColor"/>
+</RelativeLayout>

@@ -14,13 +14,16 @@ public class PagerAdapter extends FragmentPagerAdapter {
     //Here we have all the fragments saved into a list
     private List<Fragment> m_fragments;
 
-    public PagerAdapter(FragmentManager fm){
+    public PagerAdapter(FragmentManager fm, User user){
         super(fm);
+        ListFragment listFrag = new ListFragment();
+        listFrag.setArguments(user);
         //Here we create the Fragments
         m_fragments = new Vector<Fragment>();
-        m_fragments.add(new ListFragment());
+        m_fragments.add(listFrag);
         m_fragments.add(new SingleCacheFragment());
         m_fragments.add(new MapFragment());
+
     }
 
     @Override

@@ -29,6 +29,7 @@ public class AsyncPreLogin extends AsyncTask<String, String, String> {
     private String m_cookie = "";
     private String m_urlString = "";
     private ReportCache m_reportCache = null;
+    private User myUser = null;
 
     public AsyncPreLogin(String url, ReportCache reportCache)
     {
@@ -36,6 +37,10 @@ public class AsyncPreLogin extends AsyncTask<String, String, String> {
         m_urlString = url;
         m_reportCache = reportCache;
 
+    }
+
+    public void setUser(User user){
+        myUser = user;
     }
 
     @Override
@@ -67,7 +72,6 @@ public class AsyncPreLogin extends AsyncTask<String, String, String> {
             }
 
 
-            //List<String> cookiesHeader = headerFields.get("Set-Cookie");
             Log.v("GeoNote", "Here header");
             for (String key : headerFields.keySet()){
                 for (String value : headerFields.get(key)){
@@ -129,8 +133,11 @@ public class AsyncPreLogin extends AsyncTask<String, String, String> {
         }
 
         //Test if we can login to website with post
-        AsyncTryLogin async = new AsyncTryLogin();
-        async.setParameters(viewState, viewStateGenerator, m_cookie,true,"","", m_urlString, m_reportCache);
-        async.execute();
+        if(myUser.isValidCredentials()) {
+            AsyncTryLogin async = new AsyncTryLogin();
+            async.setParameters(viewState, viewStateGenerator, m_cookie,true,"","", m_urlString, m_reportCache);
+            async.setUser(myUser);
+            async.execute();
+        }
     }
 }

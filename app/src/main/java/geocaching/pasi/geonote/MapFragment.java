@@ -139,6 +139,7 @@ public class MapFragment extends Fragment implements LocationListener {
             updateMapNewLocation(m_cacheToBeUpdated);
             m_cacheToBeUpdated = null;
         }
+        ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -235,7 +236,7 @@ public class MapFragment extends Fragment implements LocationListener {
                     Log.v("GeoNote", ex.getMessage());
                 }
             }
-            ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.VISIBLE);
+            //((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.VISIBLE);
             m_measuring = true;
         }
     }
@@ -246,11 +247,12 @@ public class MapFragment extends Fragment implements LocationListener {
         if(m_measureCoordinates == null || m_measureCoordinates.latitude == 0.0 && m_measureCoordinates.longitude == 0.0){
             ((TextView) view.findViewById(R.id.map_distance_screen)).setText("");
             ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.INVISIBLE);
-            my_betweenLine.remove();
-            my_betweenLine = null;
+            if(my_betweenLine != null){
+                my_betweenLine.remove();
+                my_betweenLine = null;
+            }
             return;
         }
-        ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.VISIBLE);
         Location location = null;
         // Creating a criteria object to retrieve provider
         Criteria criteria = new Criteria();
@@ -268,6 +270,7 @@ public class MapFragment extends Fragment implements LocationListener {
             return;
         }
 
+        ((TextView)view.findViewById(R.id.map_distance_screen)).setVisibility(View.VISIBLE);
         float[] results = {0};
         Location.distanceBetween(m_myCurrentLocation.latitude,m_myCurrentLocation.longitude, m_measureCoordinates.latitude,m_measureCoordinates.longitude,results);
         Double distance = Double.valueOf(results[0]);

@@ -28,6 +28,8 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
     private CacheListener m_listener;
     private boolean m_downloadedOnce;
     private boolean m_downloadStarted;
+    private User myUser;
+
 
     @Override
     public void gotCache(String result) {
@@ -42,14 +44,21 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
         updateLocation(location);
     }
 
+    @Override
+    public void showToastMessage(String message) {
+        m_listener.redirectToastMessage(message);
+    }
+
     public interface CacheListener{
         public void onCacheNew(Cache cache);
         public boolean isThereSameNameCache(String name);
+        public void redirectToastMessage(String message);
     }
 
 
-    static AddCache newInstance(Cache cache) {
+    static AddCache newInstance(Cache cache, User user) {
         AddCache objectCache = new AddCache();
+        objectCache.addUser(user);
         // Supply argument.
         Bundle args = new Bundle();
         args.putString("name", cache.getName());
@@ -64,6 +73,10 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
         args.putString("winter", cache.getWinterString());
         objectCache.setArguments(args);
         return objectCache;
+    }
+
+    private void addUser(User user) {
+        myUser = user;
     }
 
 
@@ -348,6 +361,7 @@ public class AddCache extends DialogFragment implements AsyncCacheGet.HttpCacheL
             m_downloadStarted = true;
             AsyncCacheGet async = new AsyncCacheGet();
             //Setting url that is used to connect to server
+            async.setUser(myUser);
             async.setGc(gc.toUpperCase());
             async.addListener(this);
             async.addUniqueListener(this);
